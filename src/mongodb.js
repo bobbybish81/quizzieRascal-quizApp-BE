@@ -1,8 +1,8 @@
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 
-dotenv.config().parsed;
-const url = process.env.MONGO_URL;
+const env = dotenv.config().parsed;
+const url = env.MONGO_URL;
 const dbName = 'quizzieRascalDB';
 
 let client;
