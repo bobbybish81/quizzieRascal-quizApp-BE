@@ -1,13 +1,12 @@
 import express from 'express';
 import { getLeaderboard, getUser, postNewUser, postNewEntry, postResults } from './mongodb.js';
 import pkg from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import cors from "cors";
 import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
-const env = dotenv.config().parsed;
-const { sign } = pkg;
+const port = process.env.port || 8080;
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors()) 
@@ -55,14 +54,10 @@ app
         .status(400)
         .json({message: 'Password does not match!'}); 
     }
-    if (!env) {
-      return res
-      .status(500)
-      .end(); 
-    }
 
-    const jwtSecret = env.JWT_SECRET;
+    const jwtSecret = process.env.JWT_SECRET;
 
+    const { sign } = pkg;
     const jwToken = sign(
       {
         id: user[0].id,
@@ -112,7 +107,5 @@ app
       .status(201)
       .json({username: username, registered: true, alreadyRegistered: false})
   })
-
-const port = env.PORT || 8080;
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));

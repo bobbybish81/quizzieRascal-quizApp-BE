@@ -1,8 +1,6 @@
 import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
 
-const env = dotenv.config().parsed;
-const url = env.MONGO_URL;
+const url = process.env.MONGO_URL;
 const dbName = 'quizzieRascalDB';
 
 let client;
@@ -79,7 +77,6 @@ export const postResults = async (id, results) => {
   const sortedLeaderboard = [...lb].sort((a , b) => a.averageScore < b.averageScore ? 1 : -1);
   return sortedLeaderboard;
 }
-
 
 export default { 
   getLeaderboard,
