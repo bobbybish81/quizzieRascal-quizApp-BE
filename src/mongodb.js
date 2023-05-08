@@ -78,10 +78,22 @@ export const postResults = async (id, results) => {
   return sortedLeaderboard;
 }
 
+export const resetPassword = async (email, password) => {
+  await connectUsers();
+  await users.updateOne(
+    {email: email},
+    {
+      $set: {
+        password: password,
+      },
+    },
+)};
+
 export default { 
   getLeaderboard,
   getUser,
   postNewUser,
   postNewEntry,
   postResults,
+  resetPassword
 }; 

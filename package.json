@@ -14,8 +14,10 @@
   "license": "ISC",
   "dependencies": {
     "babel-install": "^2.1.0",
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "express": "^4.17.3",
+    "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.0",
     "mongodb": "^5.0.0",
     "uuid": "^9.0.0"

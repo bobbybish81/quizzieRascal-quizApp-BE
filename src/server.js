@@ -1,7 +1,15 @@
 import express from 'express';
-import { getLeaderboard, getUser, postNewUser, postNewEntry, postResults } from './mongodb.js';
+import {
+  getLeaderboard,
+  getUser,
+  postNewUser,
+  postNewEntry,
+  postResults,
+  resetPassword } from './mongodb.js';
 import pkg from 'jsonwebtoken';
 import cors from "cors";
+import bcrypt from 'bcrypt';
+import { validateRegistration } from '../middleware/validateReg.js'
 import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
@@ -43,18 +51,19 @@ app
   .route('/login')
     .post(async (req, res) => {
       const { email, password } = req.body;
+
       const user = await getUser(email);
       if (!user[0]?.email) {
         return res
           .status(400)
           .json({message: 'Email address not found!'}); 
       }
-      if (user[0]?.password !== password) {
+      const verifyPassword = bcrypt.compareSync(password, user[0]?.password)
+      if (!verifyPassword) {
         return res
-          .status(400)
-          .json({message: 'Password does not match!'}); 
+          .status(404)
+          .json({message: 'Incorrect password!'}); 
       }
-
       const jwtSecret = process.env.JWT_SECRET;
 
       const { sign } = pkg;
@@ -73,8 +82,53 @@ app
     })
 
 app
+.route('/resetpassword')
+  .get(async (req, res) => {
+    const { email } = req.body;
+    const user = await getUser(email);
+    if (!user[0]?.email) {
+      return res
+        .status(400)
+        .json({message: 'Email address not found!'}); 
+    } else {
+      return res
+        .status(400)
+        .json({
+          username: user[0]?.username,
+          email: user[0]?.email
+        })
+      }
+    })
+  .patch(async (req, res) => {
+    const { error } = validateRegistration(req.body);
+    if (error) {
+      return res
+        .status(400)
+        .json({message: `${error.details[0].message}`})
+    }
+    const { email, password } = req.body;
+    const hashPassword = await bcrypt.hash(password, 8)
+    await resetPassword(email, hashPassword)
+    const user = await getUser(email);
+    return res
+      .setHeader('content-type', 'application/json')
+      .status(200)
+      .json({
+        success: true,
+        username: user[0]?.username,
+        message: `Password for (${user[0]?.username}) has now been changed`
+      })
+})
+
+app
   .route('/register')
     .post(async (req, res) => {
+      const { error } = validateRegistration(req.body);
+      if (error) {
+        return res
+          .status(400)
+          .json({message: `${error.details[0].message}`})
+      }
       const { username, email, password } = req.body;
       const user = await getUser(email);
       if (user[0]?.email) {
@@ -82,12 +136,12 @@ app
           .status(400)
           .json({registered: false, alreadyRegistered: true}); 
       }
-
+      const hashPassword = await bcrypt.hash(password, 8)
       const newUser = {
         id: uuidv4(),
         username: username,
         email: email,
-        password: password,
+        password: hashPassword,
       }
       await postNewUser(newUser)
 
