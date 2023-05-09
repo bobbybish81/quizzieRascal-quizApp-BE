@@ -13,7 +13,8 @@ import { validateRegistration } from '../middleware/validateReg.js'
 import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
-const port = process.env.port || 8080;
+// const port = process.env.port || 8080;
+const port = 8080;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -64,7 +65,8 @@ app
           .status(404)
           .json({message: 'Incorrect password!'}); 
       }
-      const jwtSecret = process.env.JWT_SECRET;
+      // const jwtSecret = process.env.JWT_SECRET;
+      const jwtSecret = 'champions2020';
 
       const { sign } = pkg;
       const jwToken = sign(
@@ -82,43 +84,48 @@ app
     })
 
 app
-.route('/resetpassword')
-  .get(async (req, res) => {
-    const { email } = req.body;
-    const user = await getUser(email);
-    if (!user[0]?.email) {
+  .route('/resetpassword')
+    .post(async (req, res) => {
+      const { email } = req.body;
+      const user = await getUser(email);
+      if (!user[0]?.email) {
+        return res
+          .status(400)
+          .json({
+            username: null,
+            email: null,
+            message: 'Email address not found!'
+          })
+        }
       return res
-        .status(400)
-        .json({message: 'Email address not found!'}); 
-    } else {
-      return res
-        .status(400)
+        .status(200)
         .json({
           username: user[0]?.username,
-          email: user[0]?.email
+          email: user[0]?.email,
+          message: null
         })
-      }
-    })
-  .patch(async (req, res) => {
-    const { error } = validateRegistration(req.body);
-    if (error) {
-      return res
-        .status(400)
-        .json({message: `${error.details[0].message}`})
-    }
-    const { email, password } = req.body;
-    const hashPassword = await bcrypt.hash(password, 8)
-    await resetPassword(email, hashPassword)
-    const user = await getUser(email);
-    return res
-      .setHeader('content-type', 'application/json')
-      .status(200)
-      .json({
-        success: true,
-        username: user[0]?.username,
-        message: `Password for (${user[0]?.username}) has now been changed`
       })
-})
+    .patch(async (req, res) => {
+      const { error } = validateRegistration(req.body);
+      if (error) {
+        return res
+          .status(400)
+          .json({message: `${error.details[0].message}`})
+      }
+      const { email, password } = req.body;
+      const hashPassword = await bcrypt.hash(password, 8)
+      await resetPassword(email, hashPassword)
+      const user = await getUser(email);
+      return res
+        .setHeader('content-type', 'application/json')
+        .status(200)
+        .json({
+          success: true,
+          username: user[0]?.username,
+          email: user[0]?.email,
+          message: `Your password has now been changed`
+        })
+    })
 
 app
   .route('/register')

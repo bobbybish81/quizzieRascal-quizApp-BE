@@ -1,6 +1,7 @@
 import { MongoClient } from 'mongodb';
 
-const url = process.env.MONGO_URL;
+// const url = process.env.MONGO_URL;
+const url = 'mongodb+srv://bobbybish81:MongoDBRocks!123@cluster0.eiymxut.mongodb.net/test';
 const dbName = 'quizzieRascalDB';
 
 let client;
