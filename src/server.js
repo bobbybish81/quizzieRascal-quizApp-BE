@@ -88,13 +88,16 @@ app
     if (!user[0]?.email) {
       return res
         .status(400)
-        .json({message: 'Email address not found!'}); 
+        .json({
+          username: null,
+          email: '',
+          message: 'Email address not found!'}); 
     } else {
       return res
-        .status(400)
+        .status(200)
         .json({
           username: user[0]?.username,
-          email: user[0]?.email
+          email: user[0]?.email,
         })
       }
     })
@@ -115,6 +118,7 @@ app
       .json({
         success: true,
         username: user[0]?.username,
+        email: user[0]?.email,
         message: `Password for (${user[0]?.username}) has now been changed`
       })
 })
