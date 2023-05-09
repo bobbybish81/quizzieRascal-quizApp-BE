@@ -82,7 +82,7 @@ app
 
 app
 .route('/resetpassword')
-  .get(async (req, res) => {
+  .post(async (req, res) => {
     const { email } = req.body;
     const user = await getUser(email);
     if (!user[0]?.email) {
