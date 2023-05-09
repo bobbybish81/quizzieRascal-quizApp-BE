@@ -52,7 +52,6 @@ app
   .route('/login')
     .post(async (req, res) => {
       const { email, password } = req.body;
-
       const user = await getUser(email);
       if (!user[0]?.email) {
         return res
@@ -66,7 +65,6 @@ app
           .json({message: 'Incorrect password!'}); 
       }
       const jwtSecret = process.env.JWT_SECRET;
-
       const { sign } = pkg;
       const jwToken = sign(
         {
