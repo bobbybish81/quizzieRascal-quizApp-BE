@@ -13,6 +13,7 @@ import { validateRegistration } from '../middleware/validateReg.js'
 import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
+
 const port = process.env.port || 8080;
 
 app.use(express.urlencoded({ extended: false }));
