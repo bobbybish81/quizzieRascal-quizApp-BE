@@ -68,7 +68,7 @@ app
       const { sign } = pkg;
       const jwToken = sign(
         {
-          id: user[0].userId,
+          userId: user[0].userId,
           username: user[0].username,
           password: user[0].password
         },
@@ -77,7 +77,7 @@ app
       return res
         .setHeader('content-type', 'application/json')
         .status(200)
-        .json({message: 'Welcome back!', token: jwToken, user: user[0].id})
+        .json({message: 'Welcome back!', token: jwToken, user: user[0].userId})
     })
 
 app
