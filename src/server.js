@@ -35,9 +35,9 @@ app
     })
 
 app
-  .route('/api/leaderboard/:id')
+  .route('/api/leaderboard/:userid')
     .post(async (req, res) => {
-      const sortedLeaderboard = await postResults(req.params.id, req.body);
+      const sortedLeaderboard = await postResults(req.params.userid, req.body);
       return sortedLeaderboard ?
       res
         .setHeader('content-type', 'application/json')
@@ -68,7 +68,7 @@ app
       const { sign } = pkg;
       const jwToken = sign(
         {
-          id: user[0].id,
+          id: user[0].userId,
           username: user[0].username,
           password: user[0].password
         },
@@ -141,7 +141,7 @@ app
       }
       const hashPassword = await bcrypt.hash(password, 8)
       const newUser = {
-        id: uuidv4(),
+        userId: uuidv4(),
         username: username,
         email: email,
         password: hashPassword,
@@ -149,7 +149,7 @@ app
       await postNewUser(newUser)
 
       await postNewEntry({
-        id: newUser.id,
+        userId: newUser.userId,
         username: username,
         totalPlays: 0,
         totalScore: 0,
