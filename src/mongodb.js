@@ -42,11 +42,11 @@ export const postNewEntry = async (newEntry) => {
   await leaderboard.insertOne(newEntry);
 }
 
-export const postResults = async (id, results) => {
+export const postResults = async (userId, results) => {
   await connectLeaderboard();
   const { timeTaken, score } = results;
 
-  const player = await leaderboard.find({id: id}).toArray();
+  const player = await leaderboard.find({userId: userId}).toArray();
 
   const totalPlays = player[0].totalPlays + 1;
   const totalScore = player[0].totalScore + score;
@@ -61,7 +61,7 @@ export const postResults = async (id, results) => {
   }
 
   await leaderboard.updateOne(
-    { id: id },
+    { userId: userId },
     {
       $set: {
         totalPlays: totalPlays,
