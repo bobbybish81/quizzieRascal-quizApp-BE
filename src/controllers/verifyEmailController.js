@@ -37,7 +37,15 @@ const verifyEmail = async (req, res) => {
         <a href='${resetLink}'><button style='margin: 10px 0; color: #fff; padding: 5px 10px; background-color: #1C90AF; border-radius: 5px'>Reset Password<button></a>`,
     }
 
-    transporter.sendMail(mailOptions)
+    await new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, function (error, response) {
+            if (error) {
+                reject(error)
+            } else {
+                resolve(response)
+            }
+        });
+    })
     
     return res
       .sendStatus(200)
