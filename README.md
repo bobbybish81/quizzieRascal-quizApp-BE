@@ -1,27 +1,71 @@
 # Quizzie Rascal Quiz App Backend
 
-# Background
-An express server in Node.js to handle CRUD operations with resources provided from a mongoDB database. The routes manage user login, registrations and result posts, 
+This is the backend repository for the Quiz App project. The backend is built using Express.js framework, MongoDB for data storage using Mongoose as the ODM (Object-Document Mapping), and Nodemailer for implementing the reset password functionality.
 
-# Technologies
-Javascript • 
-Node JS • 
-Express •
-MongoDB •
-REST api architecture
+## Prerequisites
 
-# Getting Started
-1. Clone this repository and run npm install
-2. You will need create a database in mongoDB named 'quizzieRascalDB' with the following collections:
+Before running this application, make sure you have the following installed on your system:
 
-   - users
-   - leaderboard
+- Node.js (v16 or above)
+- MongoDB (v5 or above)
 
-Follow link below for assistance with creating mongoDB collections:
-https://www.mongodb.com/cloud/atlas/lp/try4?utm_source=bing&utm_campaign=search_bs_pl_evergreen_atlas_core_prosp-brand_gic-null_emea-se_ps-all_desktop_eng_lead&utm_term=mongodbatlas&utm_medium=cpc_paid_search&utm_ad=p&utm_ad_campaign_id=415204557&adgroup=1207264237114064&msclkid=72240c86c5451ff8c2a66f663bfec6a8
+## Installation
 
-3. Create an .env file and add your mongo url variable - e.g: MONGO_URL="mongodb+srv...... "
-4. Add jsonwebtoken variable to .env file e.g. JWT_SECRET=secret
+1. Clone this repository to your local machine using the following command: git clone https://github.com/bobbybish81/quizzieRascal-quizApp-BE
+2. Navigate to the project's directory:
+3. Install the dependencies by running the following command: npm install
+4. Create a `.env` file in the root directory and provide the necessary environment variables. For example:
+
+  ACCESS_TOKEN='your-jwt-secret'
+  REFRESH_TOKEN='your-jwt-secret'
+  MONGO_USERNAME='your-mongodb-username'
+  MONGO_PASSWORD='your-mongodb-password'
+  MONGO_CLUSTER='your-mongodb-cluster'
+  MONGO_DBNAME='quizzieRascalDB'
+  EMAIL_USER='your-email@gmail.com'
+  EMAIL_PASS='your-email-password'
+
+   Update the values with your desired configuration. The MONGO variables are included in a template literal that point to your MongoDB server.
+
+5. Start the application: npm start
+   The server will start running on `http://localhost:8080`.
+
+## API Endpoints
+
+The following API endpoints are available in the application:
+
+- **User Routes:**
+
+  - `GET /api/leaderboard` - Get the current leaderboard.
+  - `POST /leaderboard/:userid` - Posts new score to leaderboard.
+  - `POST /login` - Creates access token and post refresh token to mongoDB.
+  - `DELETE /logout` - Deletes user tokens from mongoDB.
+  - `POST /register` - Creates new user in mongoDB.
+  - `POST /verifyemail` - Creates a temporary token for the user and sends an email for password reset.
+  - `PATCH /reset-password` - Updates password in mongoDB.
+
+Please refer to source code for detailed information about the request and response structure for each endpoint.
+
+## Database Configuration
+
+By default, the application uses MongoDB as the database. Make sure you have MongoDB and mongoose installed and running on your system. Update the MONGO environment variables in the `.env` file with the appropriate connection URL.
+
+## Reset Password Functionality
+
+The application uses Nodemailer to send password reset emails. It requires SMTP server configuration to function correctly. Update the following environment variables in the `.env` file with your SMTP server details:
+
+- `EMAIL_USER`: Your email address for sending emails.
+- `EMAIL_PASS`: Your email password for authentication.
+
+The host and post in `./utils/nodemailer.js` will require changing the the relevant service provider if you are not using gmail.
+
+## Contribution
+
+Contributions to this project are welcome. If you find any issues or would like to add new features, please create a pull request with detailed information about the changes.
+
+## License
+
+This project is licensed under the MIT License. Feel free to use, modify, and distribute the code as per the terms of the license.
 
 # Author
 <h3>Robert Bish</h3>
