@@ -21,7 +21,7 @@ Before running this application, make sure you have the following installed on y
   MONGO_USERNAME='your-mongodb-username'
   MONGO_PASSWORD='your-mongodb-password'
   MONGO_CLUSTER='your-mongodb-cluster'
-  MONGO_DBNAME='quizzieRascalDB'
+  MONGO_DBNAME='your-mongodb-database-name'
   EMAIL_USER='your-email@gmail.com'
   EMAIL_PASS='your-email-password'
 
