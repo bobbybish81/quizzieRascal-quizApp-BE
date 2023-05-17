@@ -24,8 +24,8 @@ const verifyEmail = async (req, res) => {
       token: pwdResetToken,
     });
     await newRefreshToken.save();
-    
-    const resetLink = `https://quizzierascal.netlify.app/resetpassword/?token=${pwdResetToken}`;
+
+    const resetLink = `https://quizzierascal.netlify.app/resetpassword?token=${pwdResetToken}`;
 
     const mailOptions = {
       to: email,
@@ -37,13 +37,20 @@ const verifyEmail = async (req, res) => {
         <a href='${resetLink}'><button style='margin: 10px 0; color: #fff; padding: 5px 10px; background-color: #1C90AF; border-radius: 5px'>Reset Password<button></a>`,
     }
 
-    transporter.sendMail(mailOptions)
+    transporter.sendMail(mailOptions, (error, message) => {
+      if (error) {
+        console.log('Error:', error);
+      } else {
+        console.log('Mail sent:', message);
+      }
+    })
 
     return res
       .sendStatus(200)
       .end()
 
   } catch (error) {
+    console.log(error)
       return res
         .sendStatus(500)
         .end()
