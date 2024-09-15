@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 
-const port = process.env.port || 8080;
+const port = process.env.PORT || 8080;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());

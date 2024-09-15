@@ -13,7 +13,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const app = express();
 // eslint-disable-next-line no-undef
-const port = process.env.port || 8080;
+const port = process.env.PORT || 8080;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
