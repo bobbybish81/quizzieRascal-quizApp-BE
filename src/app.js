@@ -11,46 +11,46 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
 const app = express();
-// eslint-disable-next-line no-undef
 const port = process.env.PORT || 8080;
 
+/*
+CORS configuration
+Allows Netlify frontend and local development
+*/
 const allowedOrigins = [
-  "https://quizzierascal.netlify.app"
+  "https://quizzierascal.netlify.app",
+  "http://localhost:3000"
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error("CORS not allowed"));
     }
   },
+  methods: ["GET","POST","PUT","PATCH","DELETE","OPTIONS"],
+  allowedHeaders: ["Content-Type","Authorization"],
   credentials: true
 }));
 
-app.options('*', cors());
+// handle preflight requests
+app.options("*", cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// eslint-disable-next-line no-undef
+// MongoDB connection
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}${process.env.MONGO_CLUSTER}/${process.env.MONGO_DBNAME}?retryWrites=true&w=majority`;
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-};
+mongoose.connect(uri)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-mongoose.connect(uri, options)
-  .then(() => {
-    console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
-  });
-
+// Routes
 app.use('/api/leaderboard', leaderboardAPIRouter);
 app.use('/leaderboard', leaderboardRouter);
 app.use('/login', loginRouter);
@@ -59,6 +59,7 @@ app.use('/register', registerRouter);
 app.use('/resetpassword', resetRouter);
 app.use('/verifyemail', verifyRouter);
 
+// Start server
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
