@@ -17,7 +17,13 @@ const port = process.env.PORT || 8080;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "https://quizzierascal.netlify.app",
+  methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+  credentials: true
+}));
+
+app.options('*', cors());
 
 // eslint-disable-next-line no-undef
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}${process.env.MONGO_CLUSTER}/${process.env.MONGO_DBNAME}?retryWrites=true&w=majority`;

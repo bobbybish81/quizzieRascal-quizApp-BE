@@ -1,5 +1,6 @@
 import { MongoClient } from 'mongodb';
 
+// eslint-disable-next-line no-undef
 const url = process.env.MONGO_URL;
 const dbName = 'quizzieRascalDB';
 
