@@ -15,15 +15,25 @@ const app = express();
 // eslint-disable-next-line no-undef
 const port = process.env.PORT || 8080;
 
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+const allowedOrigins = [
+  "https://quizzierascal.netlify.app"
+];
+
 app.use(cors({
-  origin: "https://quizzierascal.netlify.app",
-  methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
 
 app.options('*', cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // eslint-disable-next-line no-undef
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}${process.env.MONGO_CLUSTER}/${process.env.MONGO_DBNAME}?retryWrites=true&w=majority`;
